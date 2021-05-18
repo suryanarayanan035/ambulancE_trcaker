@@ -2,6 +2,7 @@ import {
   checkIfAmbulanceExists,
   listAvaialbleAmbulancesNearby,
   saveAmbulance,
+  validateAmbulanceLogin,
 } from "../controllers/ambulance";
 import { checkIfHospitalExists } from "../controllers/hospital";
 
@@ -40,6 +41,16 @@ router.post("/nearby-ambulances", async (req, res, next) => {
     return res.status(200).send({ hasError: false, ambulances });
   }
   return res.status(404).send({ hasError: true });
+});
+
+router.post("/login", async (req, res, next) => {
+  const { loginDetails } = req.body;
+  const { ambulanceId, password } = loginDetails;
+  const { isValid } = await validateAmbulanceLogin(ambulanceId, password);
+  if (isValid) {
+    return res.status(200).send({ isValid });
+  }
+  return res.status(200).send({ isValid });
 });
 
 module.exports = router;

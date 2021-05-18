@@ -2,8 +2,12 @@ import {
   checkIfHospitalExists,
   listHospitalsNearBy,
   saveHospital,
+  validateHospitalLogin,
 } from "../controllers/hospital";
-import { updateRequestStatus } from "../controllers/requestandjourney";
+import {
+  updateJourneyStatus,
+  updateRequestStatus,
+} from "../controllers/requestandjourney";
 
 const express = require("express");
 const router = express.Router();
@@ -37,5 +41,23 @@ router.post("/request-status", async (req, res, next) => {
     hasError: false,
   });
 });
-
+router.post("/journey-status", async (req, res, next) => {
+  const { journeyDetails } = req.body;
+  const { isUpdated } = await updateJourneyStatus(journeyDetails);
+  if (!isUpdated) {
+    return res.status(500).send({ hasError: true });
+  }
+  return res.status(200).send({
+    hasError: false,
+  });
+});
+router.post("/login", async (req, res, next) => {
+  const { loginDetails } = req.body;
+  const { hospitalId, password } = loginDetails;
+  const { isValid } = await validateHospitalLogin(hospitalId, password);
+  if (isValid) {
+    return res.status(200).send({ isValid });
+  }
+  return res.status(200).send({ isValid });
+});
 module.exports = router;

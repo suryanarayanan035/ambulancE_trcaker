@@ -1,4 +1,4 @@
-import { hashData } from "../../common/hashingandcryption";
+import { compareHashAndData, hashData } from "../../common/hashingandcryption";
 import { HospitalModel } from "../models/Hospital";
 import { getAvailableAmbulancesByHospital } from "./ambulance";
 export const saveHospital = async (hospital) => {
@@ -63,4 +63,21 @@ export const listHospitalsNearBy = async (location, district) => {
     };
   }
   return { areHospitalsAvailable: false };
+};
+
+export const validateHospitalLogin = async (hospitalId, passwordFromUser) => {
+  const response = await HospitalModel.findById({ _id: hospitalId }).select(
+    "password"
+  );
+  const { result, hasError } = await compareHashAndData(
+    passwordFromUser,
+    response.password
+  );
+  if (hasError || !result) {
+    return {
+      isValid: false,
+    };
+  }
+
+  return { isValid: true };
 };
