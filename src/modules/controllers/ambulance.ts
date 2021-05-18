@@ -64,27 +64,39 @@ export const getAvailableAmbulancesByHospital = async (hospitalId: string) => {
   }
 };
 
-export const listAvaialbleAmbulancesNearby = async (location, district) => {
+export const listAvaialbleAmbulancesNearby = async (
+  location,
+  district,
+  hospitalType
+) => {
   try {
     /** Getting nearbby hospitals in a given district */
     const { hospitals, areHospitalsAvailable } = await listHospitalsNearBy(
       location,
-      district
+      district,
+      hospitalType
     );
     /** checking if any hospital is available */
     if (areHospitalsAvailable) {
       let availableAmbulances = [{}];
+      availableAmbulances.pop();
       for (let i = 0; i < hospitals.length; i++) {
-        const { _id } = hospitals[i];
+        const { _id, dist } = hospitals[i];
+        const { location, calculated } = dist;
         const { ambulances, areAmbulancesAvailable } =
           await getAvailableAmbulancesByHospital(_id);
         if (areAmbulancesAvailable) {
-          for (let i = 0; i < ambulances.length; i++) {
-            availableAmbulances.push[ambulances[0]];
+          for (let j = 0; j < ambulances?.length; j++) {
+            const ambulance = {
+              ambulance: ambulances[j],
+              location,
+              distance: calculated,
+            };
+            availableAmbulances.push(ambulance);
           }
           return {
             areAmbulancesAvailable: true,
-            ambulances: ambulances,
+            ambulances: availableAmbulances,
           };
         }
         return {

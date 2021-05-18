@@ -42,8 +42,14 @@ export const checkIfHospitalExists = async (hospitalId: String) => {
   }
 };
 
-export const listHospitalsNearBy = async (location, district) => {
+export const listHospitalsNearBy = async (location, district, hospitalType) => {
   try {
+    let query;
+    if (hospitalType === "" || hospitalType === undefined) {
+      query = { "address.district": district };
+    } else {
+      query = { "address.district": district, type: hospitalType };
+    }
     const hospitals = await HospitalModel.aggregate([
       {
         $geoNear: {
@@ -51,7 +57,7 @@ export const listHospitalsNearBy = async (location, district) => {
           distanceField: "dist.calculated",
           maxDistance: 3000,
           minDistance: 0,
-          query: { "address.district": district },
+          query: query,
           includeLocs: "dist.location",
           spherical: true,
         },
@@ -59,6 +65,13 @@ export const listHospitalsNearBy = async (location, district) => {
       {
         $project: {
           _id: 1,
+          "dist.calculated": 1,
+          "dist.location": 1,
+        },
+      },
+      {
+        $sort: {
+          "dist.calculated": 1,
         },
       },
     ]);
