@@ -31,26 +31,6 @@ router.get("/:hospitalId", async (req, res, next) => {
   return res.status(404).send(response);
 });
 
-router.post("/request-status", async (req, res, next) => {
-  const { requestDetails } = req.body;
-  const { isUpdated } = await updateRequestStatus(requestDetails);
-  if (!isUpdated) {
-    return res.status(500).send({ hasError: true });
-  }
-  return res.status(200).send({
-    hasError: false,
-  });
-});
-router.post("/journey-status", async (req, res, next) => {
-  const { journeyDetails } = req.body;
-  const { isUpdated } = await updateJourneyStatus(journeyDetails);
-  if (!isUpdated) {
-    return res.status(500).send({ hasError: true });
-  }
-  return res.status(200).send({
-    hasError: false,
-  });
-});
 router.post("/login", async (req, res, next) => {
   const { loginDetails } = req.body;
   const { hospitalId, password } = loginDetails;

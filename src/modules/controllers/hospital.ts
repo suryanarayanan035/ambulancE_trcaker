@@ -1,6 +1,5 @@
 import { compareHashAndData, hashData } from "../../common/hashingandcryption";
 import { HospitalModel } from "../models/Hospital";
-import { getAvailableAmbulancesByHospital } from "./ambulance";
 export const saveHospital = async (hospital) => {
   const model = new HospitalModel({
     ...hospital,
@@ -22,62 +21,83 @@ export const saveHospital = async (hospital) => {
 };
 
 export const checkIfHospitalExists = async (hospitalId: String) => {
-  const response = await HospitalModel.findById(hospitalId).select(
-    "name mobile location address "
-  );
-  if (response != null) {
+  try {
+    const response = await HospitalModel.findById(hospitalId).select(
+      "name mobile location address "
+    );
+    if (response != null) {
+      return {
+        isHospitalExists: true,
+        hospital: response,
+      };
+    }
     return {
-      isHospitalExists: true,
-      hospital: response,
+      isHospitalExists: false,
+    };
+  } catch (error) {
+    console.log("Error while checking if hospital exists", error);
+    return {
+      isHospitalExists: false,
     };
   }
-  return {
-    isHospitalExists: false,
-  };
 };
 
 export const listHospitalsNearBy = async (location, district) => {
-  const hospitals = await HospitalModel.aggregate([
-    {
-      $geoNear: {
-        near: location,
-        distanceField: "dist.calculated",
-        maxDistance: 3000,
-        minDistance: 0,
-        query: { "address.district": district },
-        includeLocs: "dist.location",
-        spherical: true,
+  try {
+    const hospitals = await HospitalModel.aggregate([
+      {
+        $geoNear: {
+          near: location,
+          distanceField: "dist.calculated",
+          maxDistance: 3000,
+          minDistance: 0,
+          query: { "address.district": district },
+          includeLocs: "dist.location",
+          spherical: true,
+        },
       },
-    },
-    {
-      $project: {
-        _id: 1,
+      {
+        $project: {
+          _id: 1,
+        },
       },
-    },
-  ]);
-  console.log("hospitals", hospitals);
-  if (hospitals != null && hospitals?.length > 0) {
+    ]);
+    console.log("hospitals", hospitals);
+    if (hospitals != null && hospitals?.length > 0) {
+      return {
+        areHospitalsAvailable: true,
+        hospitals,
+      };
+    }
+    return { areHospitalsAvailable: false };
+  } catch (error) {
+    console.log("Error while fetching nearby hospitals");
     return {
-      areHospitalsAvailable: true,
-      hospitals,
+      areHospitalsAvailable: false,
     };
   }
-  return { areHospitalsAvailable: false };
 };
 
 export const validateHospitalLogin = async (hospitalId, passwordFromUser) => {
-  const response = await HospitalModel.findById({ _id: hospitalId }).select(
-    "password"
-  );
-  const { result, hasError } = await compareHashAndData(
-    passwordFromUser,
-    response.password
-  );
-  if (hasError || !result) {
+  try {
+    const response = await HospitalModel.findById({ _id: hospitalId }).select(
+      "password"
+    );
+    const { result, hasError } = await compareHashAndData(
+      passwordFromUser,
+      response.password
+    );
+    if (hasError || !result) {
+      return {
+        isValid: false,
+      };
+    }
+
+    return { isValid: true };
+  } catch (error) {
+    console.log("Error while retrieving hospital password", error);
     return {
-      isValid: false,
+      isValid: true,
     };
   }
-
-  return { isValid: true };
 };

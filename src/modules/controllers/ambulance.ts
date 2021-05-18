@@ -1,7 +1,7 @@
 import { compareHashAndData, hashData } from "../../common/hashingandcryption";
 import { AmbulanceModel } from "../models/Ambulance";
 import { listHospitalsNearBy } from "./hospital";
-
+const mongoose = require("mongoose");
 export const saveAmbulance = async (ambulance) => {
   const model = new AmbulanceModel({
     ...ambulance,
@@ -23,94 +23,127 @@ export const saveAmbulance = async (ambulance) => {
 };
 
 export const checkIfAmbulanceExists = async (ambulanceId: string) => {
-  const response = await AmbulanceModel.findById({ _id: ambulanceId }).select(
-    "driverName driverMobile vehicleNo hospital isAvailable "
-  );
-  if (response != null) {
+  try {
+    const response = await AmbulanceModel.findById({ _id: ambulanceId }).select(
+      "driverName driverMobile vehicleNo hospital isAvailable "
+    );
+    if (response != null) {
+      return {
+        hasError: false,
+        isAmbulanceExists: true,
+        ambulance: response,
+      };
+    }
+    return { isAmbulanceExists: false };
+  } catch (error) {
+    console.log("Error whicle checking if ambulance exists", error);
     return {
-      hasError: false,
-      isAmbulanceExists: true,
-      ambulance: response,
+      hasError: true,
     };
   }
-  return { isAmbulanceExists: false };
 };
 
 export const getAvailableAmbulancesByHospital = async (hospitalId: string) => {
-  const response = await AmbulanceModel.find({
-    hospital: hospitalId,
-    isAvailable: true,
-  }).select("driverName vehicleNo hospital");
-  console.log("Response ", response);
-  if (response != null && response?.length > 0) {
-    return {
-      areAmbulancesAvailable: true,
-      ambulances: response,
-    };
-  }
+  try {
+    const response = await AmbulanceModel.find({
+      hospital: hospitalId,
+      isAvailable: true,
+    }).select("driverName vehicleNo hospital");
+    console.log("Response ", response);
+    if (response != null && response?.length > 0) {
+      return {
+        areAmbulancesAvailable: true,
+        ambulances: response,
+      };
+    }
 
-  return { areAmbulancesAvailable: false };
+    return { areAmbulancesAvailable: false };
+  } catch (error) {
+    console.log("error whille reteiving ambulances details by hospital", error);
+    return { areAmbulancesAvailable: false };
+  }
 };
 
 export const listAvaialbleAmbulancesNearby = async (location, district) => {
-  /** Getting nearbby hospitals in a given district */
-  const { hospitals, areHospitalsAvailable } = await listHospitalsNearBy(
-    location,
-    district
-  );
-  /** checking if any hospital is available */
-  if (areHospitalsAvailable) {
-    let availableAmbulances = [{}];
-    for (let i = 0; i < hospitals.length; i++) {
-      const { _id } = hospitals[i];
-      const { ambulances, areAmbulancesAvailable } =
-        await getAvailableAmbulancesByHospital(_id);
-      if (areAmbulancesAvailable) {
-        for (let i = 0; i < ambulances.length; i++) {
-          availableAmbulances.push[ambulances[0]];
+  try {
+    /** Getting nearbby hospitals in a given district */
+    const { hospitals, areHospitalsAvailable } = await listHospitalsNearBy(
+      location,
+      district
+    );
+    /** checking if any hospital is available */
+    if (areHospitalsAvailable) {
+      let availableAmbulances = [{}];
+      for (let i = 0; i < hospitals.length; i++) {
+        const { _id } = hospitals[i];
+        const { ambulances, areAmbulancesAvailable } =
+          await getAvailableAmbulancesByHospital(_id);
+        if (areAmbulancesAvailable) {
+          for (let i = 0; i < ambulances.length; i++) {
+            availableAmbulances.push[ambulances[0]];
+          }
+          return {
+            areAmbulancesAvailable: true,
+            ambulances: ambulances,
+          };
         }
         return {
-          areAmbulancesAvailable: true,
-          ambulances: ambulances,
+          areAmbulancesAvailable: false,
         };
       }
-      return {
-        areAmbulancesAvailable: false,
-      };
     }
-  }
 
-  return { areAmbulancesAvailable: false };
+    return { areAmbulancesAvailable: false };
+  } catch (error) {
+    console.log("Error occured while listing nearby ambulances ", error);
+    return {
+      areAmbulancesAvailable: false,
+    };
+  }
 };
 
 export const changeAmbulanceAvailability = async (ambulanceId, isAvailable) => {
-  const response = await AmbulanceModel.update(
-    { _id: ambulanceId },
-    { isAvailable: isAvailable }
-  );
-  if (!response) {
+  try {
+    const response = await AmbulanceModel.updateOne(
+      { _id: ambulanceId },
+      { isAvailable: isAvailable }
+    );
+    if (!response) {
+      return {
+        hasAvailabilityChanged: false,
+      };
+    }
+    return {
+      hasAvailabilityChanged: true,
+    };
+  } catch (error) {
+    console.log(`Error while updating ambulance availability ${error}`);
     return {
       hasAvailabilityChanged: false,
     };
   }
-  return {
-    hasAvailabilityChanged: true,
-  };
 };
 
 export const validateAmbulanceLogin = async (ambulanceId, passwordFromUser) => {
-  const response = await AmbulanceModel.findById({ _id: ambulanceId }).select(
-    "password"
-  );
-  const { result, hasError } = await compareHashAndData(
-    passwordFromUser,
-    response.password
-  );
-  if (hasError || !result) {
+  try {
+    const response = await AmbulanceModel.findById({ _id: ambulanceId }).select(
+      "password"
+    );
+    const { result, hasError } = await compareHashAndData(
+      passwordFromUser,
+      response.password
+    );
+    if (hasError || !result) {
+      return {
+        isValid: false,
+      };
+    }
+
+    return { isValid: true };
+  } catch (error) {
+    console.log("error while retreiving password for ambulance", error);
     return {
       isValid: false,
     };
   }
-
-  return { isValid: true };
 };

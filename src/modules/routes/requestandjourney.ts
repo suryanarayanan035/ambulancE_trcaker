@@ -2,6 +2,7 @@ import {
   listAllPendingRequestsByHospital,
   saveRequestAndJourney,
   updateJourneyStatus,
+  updateRequestStatus,
 } from "../controllers/requestandjourney";
 
 const express = require("express");
@@ -37,9 +38,9 @@ router.get("/:hospitalId", async (req, res, next) => {
 });
 module.exports = router;
 
-router.post("/journey-status", async (req, res, next) => {
+router.put("/request-status", async (req, res, next) => {
   const { requestDetails } = req.body;
-  const { isUpdated } = await updateJourneyStatus(requestDetails);
+  const { isUpdated } = await updateRequestStatus(requestDetails);
   if (!isUpdated) {
     return res.status(500).send({ hasError: true });
   }
@@ -47,5 +48,14 @@ router.post("/journey-status", async (req, res, next) => {
     hasError: false,
   });
 });
-
+router.put("/journey-status", async (req, res, next) => {
+  const { journeyDetails } = req.body;
+  const { isUpdated } = await updateJourneyStatus(journeyDetails);
+  if (!isUpdated) {
+    return res.status(500).send({ hasError: true });
+  }
+  return res.status(200).send({
+    hasError: false,
+  });
+});
 module.exports = router;

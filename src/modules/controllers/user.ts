@@ -21,30 +21,46 @@ export const saveUser = async (user) => {
 };
 
 export const checkIfUserExists = async (userId: string) => {
-  const user = await UserModel.findById({ _id: userId }).select(
-    "name mobile location address gender bloodGroup "
-  );
+  try {
+    const user = await UserModel.findById({ _id: userId }).select(
+      "name mobile location address gender bloodGroup "
+    );
 
-  if (user != null) {
+    if (user != null) {
+      return {
+        user,
+        isUserExists: true,
+      };
+    }
+    return { isUserExists: false };
+  } catch (error) {
+    console.log("Error occured while checking if user exists", error);
     return {
-      user,
-      isUserExists: true,
+      isUserExists: false,
     };
   }
-  return { isUserExists: false };
 };
 
 export const validateUserLogin = async (userId, passwordFromUser) => {
-  const response = await UserModel.findById({ _id: userId }).select("password");
-  const { result, hasError } = await compareHashAndData(
-    passwordFromUser,
-    response.password
-  );
-  if (hasError || !result) {
+  try {
+    const response = await UserModel.findById({ _id: userId }).select(
+      "password"
+    );
+    const { result, hasError } = await compareHashAndData(
+      passwordFromUser,
+      response.password
+    );
+    if (hasError || !result) {
+      return {
+        isValid: false,
+      };
+    }
+
+    return { isValid: true };
+  } catch (error) {
+    console.log("Error while retrieving password for user ", error);
     return {
       isValid: false,
     };
   }
-
-  return { isValid: true };
 };
