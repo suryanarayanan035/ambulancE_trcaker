@@ -19,7 +19,7 @@ router.post("/", async (req, res, next) => {
   if (hasError) {
     return res.status(500).send({ hasError });
   }
-  return res.status(201).send({ hasError });
+  return res.status(200).send({ hasError });
 });
 
 router.get("/:hospitalId", async (req, res, next) => {
