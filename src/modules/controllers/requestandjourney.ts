@@ -21,7 +21,7 @@ export const saveRequestAndJourney = async (requestAndJourney) => {
 export const listAllPendingRequestsByHospital = async (hospitalId) => {
   try {
     const response = await RequestAndJourneyModel.find({
-      hospital: hospitalId,
+      hospital: mongoose.ObjectID(hospitalId),
       requestStatus: "Pending",
     }).select("_id isAccident vehicleNo");
     if (!response) {
@@ -40,7 +40,7 @@ export const listAllPendingRequestsByHospital = async (hospitalId) => {
       error
     );
     return {
-      hasRequest: true,
+      hasRequest: false,
     };
   }
 };
