@@ -23,7 +23,7 @@ router.get("/:userId", async (req, res, next) => {
   if (response.isUserExists) {
     return res.status(200).send(response);
   }
-  return res.status(404).send(response);
+  return res.status(200).send(response);
 });
 
 router.post("/login", async (req, res, next) => {

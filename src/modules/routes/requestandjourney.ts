@@ -29,9 +29,7 @@ router.get("/:hospitalId", async (req, res, next) => {
     hospitalId
   );
   if (!hasRequests) {
-    return res
-      .status(404)
-      .send({ errorMessage: "no_request_found", hasError: true });
+    return res.status(200).send({ isRequestExists: true, hasError: true });
   }
 
   return res.status(200).send({ hasError: false, requests });
