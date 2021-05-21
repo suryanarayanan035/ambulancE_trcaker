@@ -23,7 +23,7 @@ export const listAllPendingRequestsByHospital = async (hospitalId) => {
     const response = await RequestAndJourneyModel.find({
       hospital: hospitalId,
       requestStatus: "Pending",
-    }).select("_id isAccident vehicleNo");
+    }).select("_id isAccident age");
     if (!response) {
       return {
         hasRequests: false,
