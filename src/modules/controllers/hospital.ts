@@ -110,7 +110,7 @@ export const validateHospitalLogin = async (hospitalId, passwordFromUser) => {
   } catch (error) {
     console.log("Error while retrieving hospital password", error);
     return {
-      isValid: true,
+      isValid: false,
     };
   }
 };
