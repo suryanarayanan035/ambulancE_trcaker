@@ -1,4 +1,5 @@
 import {
+  getRequestDetails,
   listAllPendingRequestsByHospital,
   saveRequestAndJourney,
   updateJourneyStatus,
@@ -20,7 +21,15 @@ router.post("/", async (req, res, next) => {
   return res.status(201).send({ hasError: false });
 });
 
-router.get("/:hospitalId", async (req, res, next) => {
+router.get("/:requestId", async (req, res, next) => {
+  const { requestId } = req.params;
+  const { isRequestFound, request } = await getRequestDetails(requestId);
+  if (!isRequestFound) {
+    return res.status(200).send({ isRequestFound: false });
+  }
+  return res.status(200).send({ isRequestFound: true, request });
+});
+router.get("/hospital/:hospitalId", async (req, res, next) => {
   console.log(
     `Params for incoming requeset \n path:/requestandjoureny/:hospitalId \n Method:GET ${req.params}`
   );

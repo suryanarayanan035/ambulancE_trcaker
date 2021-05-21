@@ -36,9 +36,9 @@ router.post("/nearby-ambulances", async (req, res, next) => {
   const { areAmbulancesAvailable, ambulances } =
     await listAvaialbleAmbulancesNearby(location, district, hospitalType);
   if (areAmbulancesAvailable) {
-    return res.status(200).send({ hasError: false, ambulances });
+    return res.status(200).send({ areAmbulancesAvailable: true, ambulances });
   }
-  return res.status(404).send({ hasError: true });
+  return res.status(200).send({ areAmbulancesAvailable: false });
 });
 
 router.post("/login", async (req, res, next) => {
