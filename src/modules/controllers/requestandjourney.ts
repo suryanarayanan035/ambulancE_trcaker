@@ -21,7 +21,7 @@ export const saveRequestAndJourney = async (requestAndJourney) => {
 export const listAllPendingRequestsByHospital = async (hospitalId) => {
   try {
     const response = await RequestAndJourneyModel.find({
-      hospital: mongoose.ObjectID(hospitalId),
+      hospital: hospitalId,
       requestStatus: "Pending",
     }).select("_id isAccident vehicleNo");
     if (!response) {
