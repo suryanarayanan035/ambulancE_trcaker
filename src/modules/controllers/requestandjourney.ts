@@ -164,3 +164,25 @@ export const updateJourneyStatus = async (requestDetails) => {
     };
   }
 };
+
+export const getLocationUpdates = async (requestId) => {
+  try {
+    const response = RequestAndJourneyModel.findById({
+      _id: mongoose.Types.ObjectId(requestId),
+    }).select("currentLocation journeyStatus");
+    if (!response) {
+      return {
+        hasError: true,
+      };
+    }
+    return {
+      hasError: false,
+      locationUpdate: response,
+    };
+  } catch (error) {
+    console.log("Error while getting location updates", error);
+    return {
+      hasError: true,
+    };
+  }
+};

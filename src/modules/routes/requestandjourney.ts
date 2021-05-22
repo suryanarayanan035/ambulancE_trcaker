@@ -1,5 +1,6 @@
 import { checkIfAmbulanceExists } from "../controllers/ambulance";
 import {
+  getLocationUpdates,
   getRequestDetails,
   listAllPendingRequestsByHospital,
   saveRequestAndJourney,
@@ -89,6 +90,18 @@ router.put("/journey-status", async (req, res, next) => {
   }
   return res.status(200).send({
     hasError: false,
+  });
+});
+
+router.get("/location/:requestId", async (req, res, next) => {
+  const { requestId } = req.params;
+  const { hasError, locationUpdate } = await getLocationUpdates(requestId);
+  if (!hasError) {
+    return res.status(200).send({ hasError: true });
+  }
+  return res.status(200).send({
+    hasError: false,
+    locationUpdate,
   });
 });
 module.exports = router;
