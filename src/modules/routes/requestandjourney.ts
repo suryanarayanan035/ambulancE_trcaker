@@ -46,6 +46,7 @@ router.get("/:requestId", async (req, res, next) => {
     await checkIfAmbulanceExists(request.ambulance);
   const { name, age, mobile, gender, isAccident, bloodGroup, location } =
     request;
+  const { driverName, driverMobile } = ambulance;
   return res.status(200).send({
     isRequestFound: true,
     name,
@@ -55,7 +56,8 @@ router.get("/:requestId", async (req, res, next) => {
     isAccident,
     bloodGroup,
     location,
-    ...ambulance,
+    driverName,
+    driverMobile,
   });
 });
 module.exports = router;
