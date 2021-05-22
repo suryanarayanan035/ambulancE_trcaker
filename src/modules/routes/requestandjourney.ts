@@ -35,14 +35,15 @@ router.get("/hospital/:hospitalId", async (req, res, next) => {
 
   return res.status(200).send({ hasError: false, requests });
 });
-// router.get("/:requestId", async (req, res, next) => {
-//   const { requestId } = req.params;
-//   const { isRequestFound, request } = await getRequestDetails(requestId);
-//   if (!isRequestFound) {
-//     return res.status(200).send({ isRequestFound: false });
-//   }
-//   return res.status(200).send({ isRequestFound: true, request });
-// });
+router.get("/:requestId", async (req, res, next) => {
+  const { requestId } = req.params;
+  console.log("RequestId", requestId);
+  const { isRequestFound, request } = await getRequestDetails(requestId);
+  if (!isRequestFound) {
+    return res.status(200).send({ isRequestFound: false });
+  }
+  return res.status(200).send({ isRequestFound: true, request });
+});
 module.exports = router;
 
 router.put("/request-status", async (req, res, next) => {

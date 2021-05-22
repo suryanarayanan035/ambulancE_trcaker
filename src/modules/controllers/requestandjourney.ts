@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+import { Mongoose } from "mongoose";
 import { RequestAndJourneyModel } from "../models/RequestAndJourney";
 import { changeAmbulanceAvailability } from "./ambulance";
 
@@ -47,9 +48,10 @@ export const listAllPendingRequestsByHospital = async (hospitalId) => {
 
 export const getRequestDetails = async (requestId) => {
   try {
-    const request = await RequestAndJourneyModel.find({
-      _id: requestId,
+    const request = await RequestAndJourneyModel.findById({
+      _id: mongoose.Types.ObjectId(requestId),
     }).select("driverName ambulance vehicleNo journeyStatus requestStatus");
+    console.log("Request details rsponse", request);
     if (!request) {
       return {
         isRequestFound: false,
