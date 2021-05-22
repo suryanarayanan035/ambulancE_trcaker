@@ -127,6 +127,7 @@ export const updateJourneyStatus = async (requestDetails) => {
       },
       { journeyStatus: journeyStatus }
     );
+    console.log("update request staus response", isUpdated);
     if (!isUpdated) {
       return {
         isUpdated: false,

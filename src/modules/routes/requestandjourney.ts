@@ -85,7 +85,7 @@ router.put("/journey-status", async (req, res, next) => {
   const { journeyDetails } = req.body;
   const { isUpdated } = await updateJourneyStatus(journeyDetails);
   if (!isUpdated) {
-    return res.status(500).send({ hasError: true });
+    return res.status(200).send({ hasError: true });
   }
   return res.status(200).send({
     hasError: false,
