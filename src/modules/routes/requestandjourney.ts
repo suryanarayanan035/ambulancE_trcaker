@@ -36,6 +36,17 @@ router.get("/hospital/:hospitalId", async (req, res, next) => {
 
   return res.status(200).send({ hasError: false, requests });
 });
+router.get("/location/:requestId", async (req, res, next) => {
+  const { requestId } = req.params;
+  const { hasError, locationUpdate } = await getLocationUpdates(requestId);
+  if (!hasError) {
+    return res.status(200).send({ hasError: true });
+  }
+  return res.status(200).send({
+    hasError: false,
+    locationUpdate,
+  });
+});
 router.get("/:requestId", async (req, res, next) => {
   const { requestId } = req.params;
   console.log("RequestId", requestId);
@@ -93,15 +104,4 @@ router.put("/journey-status", async (req, res, next) => {
   });
 });
 
-router.get("/location/:requestId", async (req, res, next) => {
-  const { requestId } = req.params;
-  const { hasError, locationUpdate } = await getLocationUpdates(requestId);
-  if (!hasError) {
-    return res.status(200).send({ hasError: true });
-  }
-  return res.status(200).send({
-    hasError: false,
-    locationUpdate,
-  });
-});
 module.exports = router;
