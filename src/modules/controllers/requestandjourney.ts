@@ -51,7 +51,7 @@ export const getRequestDetails = async (requestId) => {
     const request = await RequestAndJourneyModel.findById({
       _id: mongoose.Types.ObjectId(requestId),
     }).select(
-      "name age mobile gender isAccident bloodGroup  ambulance location "
+      "name age mobile gender isAccident bloodGroup requestedBy  ambulance location "
     );
     console.log("Request details rsponse", request);
     if (!request) {
