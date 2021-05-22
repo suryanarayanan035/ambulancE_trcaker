@@ -131,7 +131,7 @@ export const updateJourneyStatus = async (journeyDetails) => {
       { journeyStatus: journeyStatus }
     );
     console.log("update request staus response", isUpdated);
-    if (!isUpdated) {
+    if (!isUpdated || isUpdated?.nModified == 0) {
       return {
         isUpdated: false,
       };
