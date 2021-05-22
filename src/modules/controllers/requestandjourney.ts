@@ -109,7 +109,7 @@ export const updateRequestStatus = async (requestDetails) => {
       isUpdated: false,
     };
   } catch (error) {
-    console.log("Error while updating journey request status", true);
+    console.log("Error while updating journey request status", error);
     return {
       isUpdated: false,
     };
