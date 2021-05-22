@@ -75,7 +75,12 @@ export const updateRequestStatus = async (requestDetails) => {
   try {
     const { requestId, requestStatus } = requestDetails;
     const isUpdated = await RequestAndJourneyModel.updateOne(
-      { _id: requestId },
+      {
+        _id: requestId,
+        $ne: {
+          $or: [{ requestStatus: "Accepted" }, { requestStatus: "Rejected" }],
+        },
+      },
       { requestStatus: requestStatus }
     );
     if (!isUpdated) {
