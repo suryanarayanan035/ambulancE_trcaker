@@ -119,8 +119,8 @@ export const updateRequestStatus = async (requestDetails) => {
   }
 };
 
-export const updateJourneyStatus = async (requestDetails) => {
-  const { requestId, ambulanceId, journeyStatus } = requestDetails;
+export const updateJourneyStatus = async (journeyDetails) => {
+  const { requestId, ambulanceId, journeyStatus } = journeyDetails;
   try {
     const isUpdated = await RequestAndJourneyModel.updateOne(
       {
