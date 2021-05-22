@@ -50,7 +50,9 @@ export const getRequestDetails = async (requestId) => {
   try {
     const request = await RequestAndJourneyModel.findById({
       _id: mongoose.Types.ObjectId(requestId),
-    }).select("driverName ambulance vehicleNo journeyStatus requestStatus");
+    }).select(
+      "name age mobile gender isAccident bloodGroup  ambulance location "
+    );
     console.log("Request details rsponse", request);
     if (!request) {
       return {

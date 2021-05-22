@@ -1,3 +1,4 @@
+import { checkIfAmbulanceExists } from "../controllers/ambulance";
 import {
   getRequestDetails,
   listAllPendingRequestsByHospital,
@@ -5,7 +6,6 @@ import {
   updateJourneyStatus,
   updateRequestStatus,
 } from "../controllers/requestandjourney";
-
 const express = require("express");
 const router = express.Router();
 
@@ -42,7 +42,12 @@ router.get("/:requestId", async (req, res, next) => {
   if (!isRequestFound) {
     return res.status(200).send({ isRequestFound: false });
   }
-  return res.status(200).send({ isRequestFound: true, request });
+  const { ambulance, hasError, isAmbulanceExists } =
+    await checkIfAmbulanceExists(request.ambulance);
+
+  return res
+    .status(200)
+    .send({ isRequestFound: true, ...request, ...ambulance });
 });
 module.exports = router;
 
