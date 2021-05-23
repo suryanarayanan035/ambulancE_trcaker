@@ -183,7 +183,7 @@ export const getLocationUpdates = async (requestId) => {
   try {
     const response = await RequestAndJourneyModel.findById({
       _id: mongoose.Types.ObjectId(requestId),
-    }).select("currentLocation journeyStatus");
+    }).select("currentLocation journeyStatus location");
     if (!response) {
       return {
         hasError: true,
