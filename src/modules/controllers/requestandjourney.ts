@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 import { Mongoose } from "mongoose";
+import { HospitalModel } from "../models/Hospital";
 import { RequestAndJourneyModel } from "../models/RequestAndJourney";
 import { changeAmbulanceAvailability } from "./ambulance";
 
@@ -74,12 +75,25 @@ export const getRequestDetails = async (requestId) => {
 export const updateRequestStatus = async (requestDetails) => {
   try {
     const { requestId, requestStatus } = requestDetails;
+    let currentLocation = null;
+    if (requestStatus == "Accepted") {
+      const { hasError, location } = await getInitialCurrentLocation(requestId);
+      if (hasError) {
+        return {
+          isUpdated: false,
+        };
+      }
+      currentLocation = location;
+    }
     const isUpdated = await RequestAndJourneyModel.updateOne(
       {
-        _id: requestId,
+        _id: mongoose.Types.ObjectId(requestId),
         requestStatus: { $nin: ["Accepted", "Rejected"] },
       },
-      { requestStatus: requestStatus }
+      {
+        requestStatus: requestStatus,
+        $push: { currentLocation: currentLocation },
+      }
     );
     if (!isUpdated) {
       return {
@@ -185,4 +199,23 @@ export const getLocationUpdates = async (requestId) => {
       hasError: true,
     };
   }
+};
+
+export const getInitialCurrentLocation = async (requestId) => {
+  const response = await RequestAndJourneyModel.findById({
+    _id: mongoose.Types.ObjectId(requestId),
+  }).select("hospital");
+  if (!response) {
+    return {
+      hasError: true,
+    };
+  }
+  const { hospital } = response;
+  const hospitalLocationResponse = await HospitalModel.findById({
+    _id: hospital,
+  }).select("location");
+  if (!hospitalLocationResponse) {
+    return { hasError: true };
+  }
+  return { hasError: false, location: hospitalLocationResponse.location };
 };
