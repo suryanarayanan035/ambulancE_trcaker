@@ -2,7 +2,10 @@ const mongoose = require("mongoose");
 import { Mongoose } from "mongoose";
 import { HospitalModel } from "../models/Hospital";
 import { RequestAndJourneyModel } from "../models/RequestAndJourney";
-import { changeAmbulanceAvailability } from "./ambulance";
+import {
+  changeAmbulanceAvailability,
+  checkIfAmbulanceExists,
+} from "./ambulance";
 
 export const saveRequestAndJourney = async (requestAndJourney) => {
   try {
@@ -192,6 +195,38 @@ export const getLocationUpdates = async (requestId) => {
     return {
       hasError: false,
       locationUpdate: response,
+    };
+  } catch (error) {
+    console.log("Error while getting location updates", error);
+    return {
+      hasError: true,
+    };
+  }
+};
+
+export const getLocationUpdatesUser = async (requestId) => {
+  try {
+    const response = await RequestAndJourneyModel.findById({
+      _id: mongoose.Types.ObjectId(requestId),
+    }).select("currentLocation ambulance location journeyStatus");
+    if (!response) {
+      return {
+        hasError: true,
+      };
+    }
+    const { hasError, ambulance } = await checkIfAmbulanceExists(
+      response.ambulace
+    );
+    if (!hasError) {
+      return {
+        hasError: false,
+      };
+    }
+
+    return {
+      hasError: false,
+      locationUpdate: response,
+      ambulance: ambulance,
     };
   } catch (error) {
     console.log("Error while getting location updates", error);
