@@ -6,11 +6,12 @@ import {
   listAllPendingRequestsByHospital,
   saveRequestAndJourney,
   updateJourneyStatus,
+  updateLocation,
   updateRequestStatus,
 } from "../controllers/requestandjourney";
 const express = require("express");
 const router = express.Router();
-
+/** Creating a new journey */
 router.post("/", async (req, res, next) => {
   console.log(
     `Body for incoming request \n Path:/requestandjourney \n Method:POST ${req.body}`
@@ -37,6 +38,7 @@ router.get("/hospital/:hospitalId", async (req, res, next) => {
 
   return res.status(200).send({ hasError: false, requests });
 });
+/**Getting location updates for user */
 router.get("/location/user/:requestId", async (req, res, next) => {
   const requestId = req.params.requestId;
   const { hasError, locationUpdate, ambulance } = await getLocationUpdatesUser(
@@ -51,6 +53,8 @@ router.get("/location/user/:requestId", async (req, res, next) => {
     ambulance,
   });
 });
+
+/**getting location updates for ambulance */
 router.get("/location/:requestId", async (req, res, next) => {
   const requestId = req.params.requestId;
   const { hasError, locationUpdate } = await getLocationUpdates(requestId);
@@ -62,6 +66,21 @@ router.get("/location/:requestId", async (req, res, next) => {
     locationUpdate,
   });
 });
+
+/**Updation location of ambulance */
+router.put("/location/", async (req, res, next) => {
+  const { locationUpdateDetails } = req.body;
+  const { hasError } = await updateLocation(locationUpdateDetails);
+  if (hasError) {
+    return res.status(200).send({
+      isUpdated: false,
+    });
+  }
+  return res.status(200).send({
+    isUpdated: true,
+  });
+});
+/**Getting details about request */
 router.get("/:requestId", async (req, res, next) => {
   const { requestId } = req.params;
   console.log("RequestId", requestId);
@@ -98,6 +117,7 @@ router.get("/:requestId", async (req, res, next) => {
 });
 module.exports = router;
 
+/** Updating request status if accepted or rejected */
 router.put("/request-status", async (req, res, next) => {
   const { requestDetails } = req.body;
   const { isUpdated } = await updateRequestStatus(requestDetails);
@@ -108,6 +128,7 @@ router.put("/request-status", async (req, res, next) => {
     hasError: false,
   });
 });
+/** Updating journey status */
 router.put("/journey-status", async (req, res, next) => {
   const { journeyDetails } = req.body;
   const { isUpdated } = await updateJourneyStatus(journeyDetails);

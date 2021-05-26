@@ -254,3 +254,27 @@ export const getInitialCurrentLocation = async (requestId) => {
   }
   return { hasError: false, location: hospitalLocationResponse.location };
 };
+
+export const updateLocation = async (locationUpdateDetails) => {
+  try {
+    const { requestId, location } = locationUpdateDetails;
+    const response = await RequestAndJourneyModel.updateOne(
+      { _id: mongoose.Types.ObjectId(requestId) },
+      { $push: { currentLocation: location } }
+    );
+    console.log("update location repsonse", response);
+    if (response.nModified == 0) {
+      return {
+        hasError: true,
+      };
+    }
+    return {
+      hasError: false,
+    };
+  } catch (error) {
+    console.log("Error occured while updating location details", error);
+    return {
+      hasError: true,
+    };
+  }
+};
