@@ -11,7 +11,7 @@ export const saveRequestAndJourney = async (requestAndJourney) => {
   try {
     const model = new RequestAndJourneyModel({
       ...requestAndJourney,
-      currentLocation: [{}].push(requestAndJourney.location),
+      currentLocation: [{}].push({ ...requestAndJourney.location }),
     });
     const response = await model.save();
     console.log(`Response of savig requestandjoureny details: ${response}`);
