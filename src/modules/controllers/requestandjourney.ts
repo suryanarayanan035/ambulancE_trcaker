@@ -221,7 +221,7 @@ export const getLocationUpdatesUser = async (requestId) => {
     const { hasError, ambulance } = await checkIfAmbulanceExists(
       response.ambulance
     );
-    if (!hasError) {
+    if (hasError) {
       return {
         hasError: true,
       };
