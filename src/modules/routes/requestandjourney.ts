@@ -43,16 +43,15 @@ router.get("/hospital/:hospitalId", async (req, res, next) => {
 /**Getting location updates for user */
 router.get("/location/user/:requestId", async (req, res, next) => {
   const requestId = req.params.requestId;
-  const { hasError, locationUpdate, ambulance } = await getLocationUpdatesUser(
-    requestId
-  );
+  const { hasError, locationUpdate, ambulanceDetails } =
+    await getLocationUpdatesUser(requestId);
   if (hasError) {
     return res.status(200).send({ hasError: true });
   }
   return res.status(200).send({
     hasError: false,
     locationUpdate,
-    ambulance,
+    ambulanceDetails,
   });
 });
 

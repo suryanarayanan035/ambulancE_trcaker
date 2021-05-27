@@ -224,6 +224,7 @@ export const getLocationUpdatesUser = async (requestId) => {
     if (!hasError) {
       return {
         hasError: false,
+        ambulanceDetails: ambulance,
       };
     }
 
