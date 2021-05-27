@@ -224,14 +224,13 @@ export const getLocationUpdatesUser = async (requestId) => {
     if (!hasError) {
       return {
         hasError: false,
-        ambulanceDetails: ambulance,
       };
     }
 
     return {
       hasError: false,
       locationUpdate: response,
-      ambulance: ambulance,
+      ambulanceDetails: ambulance,
     };
   } catch (error) {
     console.log("Error while getting location updates", error);
