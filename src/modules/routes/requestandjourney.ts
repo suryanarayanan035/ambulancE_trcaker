@@ -3,6 +3,7 @@ import {
   getLocationUpdates,
   getLocationUpdatesUser,
   getRequestDetails,
+  getRequestsByUser,
   listAllPendingRequestsByHospital,
   saveRequestAndJourney,
   updateJourneyStatus,
@@ -39,6 +40,18 @@ router.get("/hospital/:hospitalId", async (req, res, next) => {
   }
 
   return res.status(200).send({ hasError: false, requests });
+});
+/**get list of requests by user */
+router.get("/user/:userId", async (req, res, next) => {
+  const userId = req.params.userId;
+  const { hasError, requests } = await getRequestsByUser(userId);
+  if (hasError) {
+    return res.status(200).send({ hasError: true });
+  }
+  return res.status(200).send({
+    hasError: false,
+    requests,
+  });
 });
 /**Getting location updates for user */
 router.get("/location/user/:requestId", async (req, res, next) => {

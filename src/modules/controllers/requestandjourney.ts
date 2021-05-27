@@ -282,3 +282,17 @@ export const updateLocation = async (locationUpdateDetails) => {
     };
   }
 };
+
+export const getRequestsByUser = async (userId) => {
+  const requests = await RequestAndJourneyModel.find({ requestedBy: userId });
+  if (!requests) {
+    return {
+      hasError: true,
+    };
+  }
+  console.log("Response of getting requests by user");
+  return {
+    hasError: false,
+    requests,
+  };
+};
