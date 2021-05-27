@@ -17,11 +17,13 @@ router.post("/", async (req, res, next) => {
     `Body for incoming request \n Path:/requestandjourney \n Method:POST ${req.body}`
   );
   const { requestAndJourneyDetails } = req.body;
-  const { hasError } = await saveRequestAndJourney(requestAndJourneyDetails);
+  const { hasError, requestId } = await saveRequestAndJourney(
+    requestAndJourneyDetails
+  );
   if (hasError) {
     return res.status(500).send({ hasError: true });
   }
-  return res.status(201).send({ hasError: false });
+  return res.status(200).send({ hasError: false, requestId });
 });
 
 router.get("/hospital/:hospitalId", async (req, res, next) => {

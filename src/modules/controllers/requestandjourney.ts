@@ -9,11 +9,15 @@ import {
 
 export const saveRequestAndJourney = async (requestAndJourney) => {
   try {
-    const model = new RequestAndJourneyModel(requestAndJourney);
+    const model = new RequestAndJourneyModel({
+      ...requestAndJourney,
+      currentLocation: [{}].push(requestAndJourney.location),
+    });
     const response = await model.save();
     console.log(`Response of savig requestandjoureny details: ${response}`);
     return {
       hasError: false,
+      requestId: response._id,
     };
   } catch (error) {
     console.log(`Error occured while saving RequestAndJourneyData ${error}`);
@@ -186,7 +190,7 @@ export const getLocationUpdates = async (requestId) => {
   try {
     const response = await RequestAndJourneyModel.findById({
       _id: mongoose.Types.ObjectId(requestId),
-    }).select("currentLocation journeyStatus location");
+    }).select("currentLocation journeyStatus location ambulance hospital ");
     if (!response) {
       return {
         hasError: true,
@@ -208,7 +212,7 @@ export const getLocationUpdatesUser = async (requestId) => {
   try {
     const response = await RequestAndJourneyModel.findById({
       _id: mongoose.Types.ObjectId(requestId),
-    }).select("currentLocation ambulance location journeyStatus");
+    }).select("currentLocation ambulance location journeyStatus requestStatus");
     if (!response) {
       return {
         hasError: true,
