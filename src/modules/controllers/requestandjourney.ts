@@ -219,7 +219,7 @@ export const getLocationUpdatesUser = async (requestId) => {
       };
     }
     const { hasError, ambulance } = await checkIfAmbulanceExists(
-      response.ambulace
+      response.ambulance
     );
     if (!hasError) {
       return {
