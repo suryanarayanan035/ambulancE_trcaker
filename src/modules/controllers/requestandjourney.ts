@@ -223,7 +223,7 @@ export const getLocationUpdatesUser = async (requestId) => {
     );
     if (!hasError) {
       return {
-        hasError: false,
+        hasError: true,
       };
     }
 

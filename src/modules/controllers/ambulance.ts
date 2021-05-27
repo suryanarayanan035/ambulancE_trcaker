@@ -24,7 +24,7 @@ export const saveAmbulance = async (ambulance) => {
 
 export const checkIfAmbulanceExists = async (ambulanceId: string) => {
   try {
-    const response = await AmbulanceModel.findById({ _id: ambulanceId }).select(
+    const response = await AmbulanceModel.findById(ambulanceId).select(
       "driverName driverMobile vehicleNo hospital isAvailable "
     );
     if (response != null) {
