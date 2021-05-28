@@ -188,7 +188,7 @@ export const updateJourneyStatus = async (journeyDetails) => {
 
 export const getLocationUpdates = async (requestId) => {
   try {
-    const response = await RequestAndJourneyModel.findById({
+    const response = await RequestAndJourneyModel.find({
       _id: mongoose.Types.ObjectId(requestId),
     }).select("currentLocation journeyStatus location ambulance hospital ");
     if (!response) {
@@ -313,4 +313,28 @@ export const getRequestDetailsByAmbulance = async (ambulanceId) => {
     hasError: false,
     request,
   };
+};
+
+export const getLocationUpdatesAmbulance = async (ambulanceId) => {
+  try {
+    const response = await RequestAndJourneyModel.find({
+      ambulance: ambulanceId,
+      journeyStatus: { $ne: "Ride Completed" },
+      requestStatus: "Accepted",
+    }).select("currentLocation journeyStatus location ambulance hospital ");
+    if (!response) {
+      return {
+        hasError: true,
+      };
+    }
+    return {
+      hasError: false,
+      locationUpdate: response,
+    };
+  } catch (error) {
+    console.log("Error while getting location updates", error);
+    return {
+      hasError: true,
+    };
+  }
 };

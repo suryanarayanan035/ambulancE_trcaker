@@ -68,6 +68,20 @@ router.get("/location/user/:requestId", async (req, res, next) => {
     ambulanceDetails,
   });
 });
+/** get location updates by ambulance */
+router.get("/location/ambulance/:ambulanceId", async (req, res, next) => {
+  const { ambulanceId } = req.params;
+  const { hasError, request } = await getRequestDetailsByAmbulance(ambulanceId);
+  if (hasError) {
+    return res.status(200).send({
+      hasError: true,
+    });
+  }
+  return res.status(200).send({
+    hasError: false,
+    request: request[0],
+  });
+});
 
 /**getting location updates for ambulance */
 router.get("/location/:requestId", async (req, res, next) => {
