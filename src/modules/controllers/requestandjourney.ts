@@ -338,7 +338,7 @@ export const getLocationUpdatesAmbulance = async (ambulanceId) => {
 
     return {
       hasError: false,
-      locationUpdate: response,
+      locationUpdate: response[0],
       ambulanceDetails: ambulance,
     };
   } catch (error) {
