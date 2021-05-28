@@ -10,15 +10,17 @@ const express = require("express");
 const router = express.Router();
 
 router.post("/", async (req, res, next) => {
-  console.log(`Body for incoming data\n Url: /user\nMethod:POST${req.body}`);
+  console.log(
+    `Body for incoming data\n Url: /ambulance\nMethod:POST${req.body}`
+  );
   const { ambulance } = req.body;
   const { isHospitalExists } = await checkIfHospitalExists(ambulance.hospital);
-  if (!isHospitalExists) {
+  if (isHospitalExists) {
     return res.status(200).send({ hasError: true, isHospitalExists });
   }
   const { hasError } = await saveAmbulance(ambulance);
   if (hasError) {
-    return res.status(500).send({ hasError });
+    return res.status(200).send({ hasError });
   }
   return res.status(200).send({ hasError });
 });
