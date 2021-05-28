@@ -3,6 +3,7 @@ import {
   getLocationUpdates,
   getLocationUpdatesUser,
   getRequestDetails,
+  getRequestDetailsByAmbulance,
   getRequestsByUser,
   listAllPendingRequestsByHospital,
   saveRequestAndJourney,
@@ -151,6 +152,21 @@ router.put("/journey-status", async (req, res, next) => {
   }
   return res.status(200).send({
     hasError: false,
+  });
+});
+
+/** Getting  request status by ambulance */
+router.get("/ambulance/:ambulanceId", async (req, res, next) => {
+  const { ambulanceId } = req.params;
+  const { hasError, request } = await getRequestDetailsByAmbulance(ambulanceId);
+  if (hasError) {
+    return res.status(200).send({
+      hasError: true,
+    });
+  }
+  return res.status(200).send({
+    hasError: false,
+    request: request[0],
   });
 });
 

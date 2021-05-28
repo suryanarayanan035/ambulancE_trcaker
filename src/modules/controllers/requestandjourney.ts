@@ -296,3 +296,21 @@ export const getRequestsByUser = async (userId) => {
     requests,
   };
 };
+
+export const getRequestDetailsByAmbulance = async (ambulanceId) => {
+  const request = await RequestAndJourneyModel.find({
+    ambulance: ambulanceId,
+    requestStatus: "Accepted",
+    journeyStatus: { $ne: "Ride Completed" },
+  }).limit(1);
+  if (!request) {
+    return {
+      hasError: true,
+    };
+  }
+  console.log("Response of getting requests by ambulance", request);
+  return {
+    hasError: false,
+    request,
+  };
+};
