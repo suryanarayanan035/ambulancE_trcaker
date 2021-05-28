@@ -15,7 +15,7 @@ router.post("/", async (req, res, next) => {
   );
   const { ambulance } = req.body;
   const { isHospitalExists } = await checkIfHospitalExists(ambulance.hospital);
-  if (isHospitalExists) {
+  if (!isHospitalExists) {
     return res.status(200).send({ hasError: true, isHospitalExists });
   }
   const { hasError } = await saveAmbulance(ambulance);
