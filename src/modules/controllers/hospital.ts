@@ -1,3 +1,4 @@
+import { type } from "os";
 import { compareHashAndData, hashData } from "../../common/hashingandcryption";
 import { HospitalModel } from "../models/Hospital";
 export const saveHospital = async (hospital) => {
@@ -42,7 +43,7 @@ export const checkIfHospitalExists = async (hospitalId: String) => {
   }
 };
 
-export const listHospitalsNearBy = async (location, district, hospitalType) => {
+export const listHospitalsNearBy = async (district, hospitalType) => {
   try {
     let query;
     if (hospitalType === "" || hospitalType === undefined) {
@@ -50,31 +51,7 @@ export const listHospitalsNearBy = async (location, district, hospitalType) => {
     } else {
       query = { "address.district": district, type: hospitalType };
     }
-    const hospitals = await HospitalModel.aggregate([
-      {
-        $geoNear: {
-          near: location,
-          distanceField: "dist.calculated",
-          maxDistance: 3000,
-          minDistance: 0,
-          query: query,
-          includeLocs: "dist.location",
-          spherical: true,
-        },
-      },
-      {
-        $project: {
-          _id: 1,
-          "dist.calculated": 1,
-          "dist.location": 1,
-        },
-      },
-      {
-        $sort: {
-          "dist.calculated": 1,
-        },
-      },
-    ]);
+    const hospitals = await HospitalModel.find(query);
     console.log("hospitals", hospitals);
     if (hospitals != null && hospitals?.length > 0) {
       return {

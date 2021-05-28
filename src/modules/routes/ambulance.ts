@@ -34,7 +34,7 @@ router.get("/:ambulanceId", async (req, res, next) => {
 router.post("/nearby-ambulances", async (req, res, next) => {
   const { location, district, hospitalType } = req.body;
   const { areAmbulancesAvailable, ambulances } =
-    await listAvaialbleAmbulancesNearby(location, district, hospitalType);
+    await listAvaialbleAmbulancesNearby(district, hospitalType);
   if (areAmbulancesAvailable) {
     return res.status(200).send({ areAmbulancesAvailable: true, ambulances });
   }
