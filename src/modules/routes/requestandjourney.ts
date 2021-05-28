@@ -1,6 +1,7 @@
 import { checkIfAmbulanceExists } from "../controllers/ambulance";
 import {
   getLocationUpdates,
+  getLocationUpdatesAmbulance,
   getLocationUpdatesUser,
   getRequestDetails,
   getRequestDetailsByAmbulance,
@@ -71,7 +72,8 @@ router.get("/location/user/:requestId", async (req, res, next) => {
 /** get location updates by ambulance */
 router.get("/location/ambulance/:ambulanceId", async (req, res, next) => {
   const { ambulanceId } = req.params;
-  const { hasError, request } = await getRequestDetailsByAmbulance(ambulanceId);
+  const { hasError, locationUpdate, ambulanceDetails } =
+    await getLocationUpdatesAmbulance(ambulanceId);
   if (hasError) {
     return res.status(200).send({
       hasError: true,
@@ -79,7 +81,8 @@ router.get("/location/ambulance/:ambulanceId", async (req, res, next) => {
   }
   return res.status(200).send({
     hasError: false,
-    request: request[0],
+    locationUpdate,
+    ambulanceDetails,
   });
 });
 

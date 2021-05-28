@@ -319,17 +319,27 @@ export const getLocationUpdatesAmbulance = async (ambulanceId) => {
   try {
     const response = await RequestAndJourneyModel.find({
       ambulance: ambulanceId,
-      journeyStatus: { $ne: "Ride Completed" },
       requestStatus: "Accepted",
-    }).select("currentLocation journeyStatus location ambulance hospital ");
+      journeyStatus: { $ne: "Ride Completed" },
+    }).select("currentLocation ambulance location journeyStatus requestStatus");
     if (!response) {
       return {
         hasError: true,
       };
     }
+    const { hasError, ambulance } = await checkIfAmbulanceExists(
+      response.ambulance
+    );
+    if (hasError) {
+      return {
+        hasError: true,
+      };
+    }
+
     return {
       hasError: false,
       locationUpdate: response,
+      ambulanceDetails: ambulance,
     };
   } catch (error) {
     console.log("Error while getting location updates", error);
