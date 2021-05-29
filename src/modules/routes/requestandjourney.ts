@@ -17,7 +17,8 @@ const router = express.Router();
 /** Creating a new journey */
 router.post("/", async (req, res, next) => {
   console.log(
-    `Body for incoming request \n Path:/requestandjourney \n Method:POST ${req.body.requestAndJourneyDetails}`
+    "Body for incoming request \n Path:/requestandjourney \n Method:POST ",
+    req.body.requestAndJourneyDetails
   );
   const { requestAndJourneyDetails } = req.body;
   const { hasError, requestId } = await saveRequestAndJourney(
