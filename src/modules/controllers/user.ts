@@ -22,10 +22,10 @@ export const saveUser = async (user) => {
 
 export const checkIfUserExists = async (userId: string) => {
   try {
-    const user = await UserModel.findById({ _id: userId }).select(
+    const user = await UserModel.findById(userId).select(
       "name mobile location address gender bloodGroup "
     );
-
+    console.log("user response", user);
     if (user != null) {
       return {
         user,

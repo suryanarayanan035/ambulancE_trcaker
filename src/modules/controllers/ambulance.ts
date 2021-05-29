@@ -83,6 +83,7 @@ export const listAvaialbleAmbulancesNearby = async (district, hospitalType) => {
           for (let j = 0; j < ambulances?.length; j++) {
             const ambulance = {
               hospitalName: name,
+
               ...ambulances[j]._doc,
             };
             availableAmbulances.push(ambulance);
