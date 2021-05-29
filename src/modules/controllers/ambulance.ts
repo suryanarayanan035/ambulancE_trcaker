@@ -83,23 +83,25 @@ export const listAvaialbleAmbulancesNearby = async (district, hospitalType) => {
           for (let j = 0; j < ambulances?.length; j++) {
             const ambulance = {
               hospitalName: name,
-
               ...ambulances[j]._doc,
             };
             availableAmbulances.push(ambulance);
           }
-          return {
-            areAmbulancesAvailable: true,
-            ambulances: availableAmbulances,
-          };
         }
+      }
+      if (availableAmbulances.length > 0) {
         return {
-          areAmbulancesAvailable: false,
+          areAmbulancesAvailable: true,
+          ambulances: availableAmbulances,
         };
       }
+      return {
+        areAmbulancesAvailable: false,
+      };
     }
-
-    return { areAmbulancesAvailable: false };
+    return {
+      areAmbulancesAvailable: false,
+    };
   } catch (error) {
     console.log("Error occured while listing nearby ambulances ", error);
     return {
